@@ -132,7 +132,7 @@
 
   <script>
     /* ===== 설정 ===== */
-    const TARGET_TIME = new Date("2025-12-30T18:30:00+09:00"); // 한국 시간
+    const TARGET_TIME = new Date("2025-12-30T18:35:00+09:00"); // 한국 시간
     const VIDEO_ID = "DElqg7XL-s4";
     const START_TIME = 20; // 영상 시작 초
     const VIDEO_START_AT = 201; // 201초 남았을 때 영상 시작
@@ -141,6 +141,9 @@
     let videoStarted = false;
     let lastSecond = null;
 
+    const soundBtn = document.getElementById("soundBtn");
+
+    
     function onYouTubeIframeAPIReady() {
       player = new YT.Player("player", {
         videoId: VIDEO_ID,

@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>2026년 이뤄낼 거니까</title>
+  <title>이뤄낼 거니까</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
@@ -122,10 +122,10 @@
 
 <body>
 
-  <h1>💫2026년 이뤄낼 거니까💫</h1>
+  <h2>💫2026년 이뤄낼 거니까💫</h2>
 
   <div id="time-remaining"></div>
-  <div id="final-countdown">끝이 기다리는 시작으로</div>
+  <div id="final-countdown">GOODBYE 2025</div>
 
   <div class="video-wrapper">
     <div class="video-container">
@@ -138,7 +138,7 @@
     </div>
 
     <!-- 수동 소리 ON -->
-    <button id="soundBtn">🔊 소리 ON</button>
+    <button id="soundBtn" class="hidden">🔊 소리 ON</button>
   </div>
 
   <script src="https://www.youtube.com/iframe_api"></script>
@@ -184,26 +184,30 @@
     }
 
     function seekVideoOnce() {
-      if (!videoReady || hasSeekedOnce) return;
+  if (!videoReady || hasSeekedOnce) return;
 
-      player.seekTo(SEEK_POINT, true);
-      hasSeekedOnce = true;
+  player.seekTo(SEEK_POINT, true);
+  hasSeekedOnce = true;
 
-      document.getElementById("soundNotice").textContent =
-        "지금부터 시작! 소리 ON 클릭";
-    }
+  document.getElementById("soundNotice").textContent =
+    "지금부터 시작!";
 
-    document.getElementById("soundBtn").addEventListener("click", () => {
-      if (!videoReady) return;
+  document.getElementById("soundBtn").classList.remove("hidden");
+}
 
-      if (isMuted) {
-        player.unMute();
-        player.setVolume(100);
-        isMuted = false;
-        document.getElementById("soundNotice").classList.add("hidden");
-      }
-    });
+document.getElementById("soundBtn").addEventListener("click", () => {
+  if (!videoReady) return;
 
+  if (isMuted) {
+    player.unMute();
+    player.setVolume(100);
+    isMuted = false;
+
+    document.getElementById("soundNotice").classList.add("hidden");
+  }
+});
+
+    
     function updateCountdown() {
       const now = new Date();
       const diff = TARGET_TIME - now;
@@ -231,7 +235,7 @@
       timeEl.textContent = `남은 시간 ${min}:${sec.toString().padStart(2, "0")}`;
 
       if (totalSec > COUNTDOWN_START_SEC) {
-        finalEl.textContent = "끝이 기다리는 시작으로";
+        finalEl.textContent = "GOODBYE 2025";
         finalEl.className = "";
         return;
       }

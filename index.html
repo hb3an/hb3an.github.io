@@ -12,49 +12,42 @@
       background: radial-gradient(circle at top, #1a1a2e, #000);
       color: white;
       text-align: center;
-      transition: background 0.4s ease;
     }
 
     h1 {
       margin-top: 40px;
       font-size: 2.4rem;
-      letter-spacing: -0.02em;
     }
 
-    /* 남은 시간 */
     #time-remaining {
+      margin-top: 10px;
       font-size: 1.1rem;
       opacity: 0.7;
-      margin-top: 12px;
     }
 
-    /* 중앙 메시지 / 카운트다운 */
     #final-countdown {
       margin-top: 20px;
       min-height: 6rem;
       font-size: 2.4rem;
       font-weight: 600;
       opacity: 0.85;
-      transition: all 0.6s ease;
+      transition: all 0.4s ease;
     }
 
-    /* 10초 카운트다운 숫자 */
     .count-number {
       font-size: 7rem;
       font-weight: 800;
       color: #ffd369;
-      text-shadow: 0 0 30px rgba(255, 211, 105, 0.6);
+      text-shadow: 0 0 30px rgba(255,211,105,0.6);
     }
 
-    /* 색상 변화 */
     .count-3 { color: #ffb703; }
     .count-2 { color: #ff6b35; }
     .count-1 {
-      color: #ffffff;
+      color: #fff;
       text-shadow: 0 0 40px white;
     }
 
-    /* 숫자 애니메이션 */
     .count-animate {
       animation: pop 0.8s ease-out;
     }
@@ -65,7 +58,6 @@
       100% { transform: scale(1); }
     }
 
-    /* 영상 영역 */
     .video-wrapper {
       max-width: 900px;
       margin: 40px auto 0;
@@ -88,8 +80,25 @@
       height: 100%;
     }
 
+    .sound-notice {
+      margin-top: 14px;
+      font-size: 0.95rem;
+      opacity: 0.85;
+      animation: fadePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes fadePulse {
+      0% { opacity: 0.4; }
+      50% { opacity: 1; }
+      100% { opacity: 0.4; }
+    }
+
+    .hidden {
+      display: none;
+    }
+
     button {
-      margin: 18px auto 60px;
+      margin: 16px auto 40px;
       padding: 14px 28px;
       font-size: 16px;
       border-radius: 30px;
@@ -98,10 +107,8 @@
       background: linear-gradient(135deg, #ffd369, #ff9f45);
       color: #000;
       font-weight: 600;
-      display: none;
     }
 
-    /* 0초 플래시 */
     .flash {
       animation: flash 0.4s ease;
     }
@@ -124,60 +131,78 @@
     <div class="video-container">
       <div id="player"></div>
     </div>
-    <button id="soundBtn">🔊 소리 켜기</button>
+
+    <!-- 안내 문구 (처음부터 항상 표시) -->
+    <div id="soundNotice" class="sound-notice">
+      광고 스킵 후 기다려주세요
+    </div>
+
+    <!-- 수동 소리 ON -->
+    <button id="soundBtn">🔊 소리 ON</button>
   </div>
 
-  <!-- YouTube IFrame API -->
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
-    /* ===== 설정 ===== */
-    const TARGET_TIME = new Date("2025-12-30T18:47:00+09:00"); // 한국 시간
-    const VIDEO_ID = "DElqg7XL-s4";
-    const START_TIME = 20; // 영상 시작 초
-    const VIDEO_START_AT = 201; // 201초 남았을 때 영상 시작
-    
-    const soundBtn = document.getElementById("soundBtn");
-    
-    let player;
-    let videoStarted = false;
-    let lastSecond = null;
+    /* ===== 시간 기준 ===== */
+    const TARGET_TIME = new Date("2026-01-01T00:00:00+09:00"); // 00:00:00
+    const SEEK_OFFSET_SEC = 201; // 타겟 시각보다 몇 초 전인지
+    const VIDEO_SEEK_TIME = new Date(
+  TARGET_TIME.getTime() - SEEK_OFFSET_SEC * 1000
+);
 
-    
+    const COUNTDOWN_START_SEC = 10;
+
+    const VIDEO_ID = "DElqg7XL-s4";
+    const SEEK_POINT = 20;
+
+    let player;
+    let videoReady = false;
+    let hasSeekedOnce = false;
+    let lastSecond = null;
+    let isMuted = true;
+
     function onYouTubeIframeAPIReady() {
       player = new YT.Player("player", {
         videoId: VIDEO_ID,
         playerVars: {
-          autoplay: 0,
-          start: START_TIME,
+          autoplay: 1,
+          mute: 1,
+          loop: 1,
+          playlist: VIDEO_ID,
           controls: 0,
           rel: 0,
           modestbranding: 1
+        },
+        events: {
+          onReady: () => {
+            videoReady = true;
+            player.playVideo();
+          }
         }
       });
     }
 
-    function startVideo() {
-  if (videoStarted) return;
-  videoStarted = true;
+    function seekVideoOnce() {
+      if (!videoReady || hasSeekedOnce) return;
 
-  player.mute();
-  player.playVideo();
-  soundBtn.style.display = "inline-block";
-}
+      player.seekTo(SEEK_POINT, true);
+      hasSeekedOnce = true;
 
-/* ✅ 소리 토글은 "클릭할 때만" 실행 */
-soundBtn.onclick = () => {
-  if (player.isMuted()) {
-    player.unMute();
-    soundBtn.textContent = "🔇 소리 끄기";
-  } else {
-    player.mute();
-    soundBtn.textContent = "🔊 소리 켜기";
-  }
-};
+      document.getElementById("soundNotice").textContent =
+        "지금부터 시작! 소리 ON 클릭";
+    }
 
+    document.getElementById("soundBtn").addEventListener("click", () => {
+      if (!videoReady) return;
 
+      if (isMuted) {
+        player.unMute();
+        player.setVolume(100);
+        isMuted = false;
+        document.getElementById("soundNotice").classList.add("hidden");
+      }
+    });
 
     function updateCountdown() {
       const now = new Date();
@@ -186,14 +211,16 @@ soundBtn.onclick = () => {
       const timeEl = document.getElementById("time-remaining");
       const finalEl = document.getElementById("final-countdown");
 
+      // seekTo 시점 체크
+      if (now >= VIDEO_SEEK_TIME) {
+        seekVideoOnce();
+      }
+
       if (diff <= 0) {
         timeEl.textContent = "";
         finalEl.textContent = "HAPPY NEW YEAR";
-        finalEl.className = "";
         finalEl.style.fontSize = "3rem";
-
         document.body.classList.add("flash");
-        startVideo();
         return;
       }
 
@@ -203,19 +230,12 @@ soundBtn.onclick = () => {
 
       timeEl.textContent = `남은 시간 ${min}:${sec.toString().padStart(2, "0")}`;
 
-      // 🔥 영상 시작 체크 (먼저)
-  if (totalSec === VIDEO_START_AT) {
-        startVideo();
-      }
-      
-      if (totalSec > 10) {
+      if (totalSec > COUNTDOWN_START_SEC) {
         finalEl.textContent = "끝이 기다리는 시작으로";
         finalEl.className = "";
-        finalEl.style.fontSize = "2.4rem";
         return;
       }
 
-      /* 10초 카운트다운 */
       finalEl.textContent = totalSec;
       finalEl.className = "count-number count-animate";
 
@@ -229,8 +249,6 @@ soundBtn.onclick = () => {
         finalEl.classList.add("count-animate");
         lastSecond = totalSec;
       }
-
-    
     }
 
     setInterval(updateCountdown, 1000);

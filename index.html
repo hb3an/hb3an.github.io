@@ -40,7 +40,7 @@
 
     /* 10초 카운트다운 숫자 */
     .count-number {
-      font-size: 5rem;
+      font-size: 7rem;
       font-weight: 800;
       color: #ffd369;
       text-shadow: 0 0 30px rgba(255, 211, 105, 0.6);
@@ -132,7 +132,7 @@
 
   <script>
     /* ===== 설정 ===== */
-    const TARGET_TIME = new Date("2025-12-30T18:05:00+09:00"); // 한국 시간
+    const TARGET_TIME = new Date("2025-12-30T18:20:00+09:00"); // 한국 시간
     const VIDEO_ID = "DElqg7XL-s4";
     const START_TIME = 20; // 영상 시작 초
     const VIDEO_START_AT = 201; // 201초 남았을 때 영상 시작
@@ -163,9 +163,16 @@
       document.getElementById("soundBtn").style.display = "inline-block";
     }
 
-    document.getElementById("soundBtn").onclick = () => {
-      player.unMute();
-    };
+    if (player.isMuted()) {
+  player.unMute();
+  soundBtn.textContent = "🔇 소리 끄기";
+  soundBtn.style.background = "linear-gradient(135deg, #ff9f45, #ffd369)";
+} else {
+  player.mute();
+  soundBtn.textContent = "🔊 소리 켜기";
+  soundBtn.style.background = "linear-gradient(135deg, #ffd369, #ff9f45)";
+}
+
 
     function updateCountdown() {
       const now = new Date();

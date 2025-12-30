@@ -6,12 +6,15 @@
 </head>
 <body>
 
-<h1 id="title">2026년 이뤄낼 거니까</h1>
-<div id="status">대기 중...</div>
-
+<div id="container">
+  <h1 id="title">2026년 이뤄낼 거니까</h1>
+  <div id="status">대기 중...</div>
+ <div id="player-area"></div>
+</div>
+  
 <script>
   // ⚠️ 지금 시간보다 1~2분 뒤로 설정!
-  const TARGET_TIME = "17:09:00";
+  const TARGET_TIME = "17:20:00";
   const VIDEO_ID = "DElqg7XL-s4";
   const START_TIME = 20;
 
@@ -34,14 +37,13 @@
   }
 
   function playVideo() {
-  document.body.innerHTML = `
-    <iframe
-      id="player"
-      src="https://www.youtube.com/embed/${VIDEO_ID}?autoplay=1&start=${START_TIME}&mute=1"
-      frameborder="0"
-      allow="autoplay; encrypted-media"
-      allowfullscreen>
-    </iframe>
+ document.getElementById("player-area").innerHTML = `
+      <iframe
+        src="https://www.youtube.com/embed/${VIDEO_ID}?autoplay=1&start=${START_TIME}&mute=1"
+        frameborder="0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen>
+      </iframe>
 
     <button id="soundBtn" style="
       position: fixed;

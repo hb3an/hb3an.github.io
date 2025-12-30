@@ -132,16 +132,16 @@
 
   <script>
     /* ===== 설정 ===== */
-    const TARGET_TIME = new Date("2025-12-30T18:35:00+09:00"); // 한국 시간
+    const TARGET_TIME = new Date("2025-12-30T18:47:00+09:00"); // 한국 시간
     const VIDEO_ID = "DElqg7XL-s4";
     const START_TIME = 20; // 영상 시작 초
     const VIDEO_START_AT = 201; // 201초 남았을 때 영상 시작
-
+    
+    const soundBtn = document.getElementById("soundBtn");
+    
     let player;
     let videoStarted = false;
     let lastSecond = null;
-
-    const soundBtn = document.getElementById("soundBtn");
 
     
     function onYouTubeIframeAPIReady() {
@@ -203,6 +203,11 @@ soundBtn.onclick = () => {
 
       timeEl.textContent = `남은 시간 ${min}:${sec.toString().padStart(2, "0")}`;
 
+      // 🔥 영상 시작 체크 (먼저)
+  if (totalSec === VIDEO_START_AT) {
+        startVideo();
+      }
+      
       if (totalSec > 10) {
         finalEl.textContent = "끝이 기다리는 시작으로";
         finalEl.className = "";
@@ -225,12 +230,10 @@ soundBtn.onclick = () => {
         lastSecond = totalSec;
       }
 
-      if (totalSec === VIDEO_START_AT) {
-        startVideo();
-      }
+    
     }
 
-    setInterval(updateCountdown, 200);
+    setInterval(updateCountdown, 1000);
   </script>
 
 </body>

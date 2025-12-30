@@ -34,15 +34,33 @@
   }
 
   function playVideo() {
-    document.body.innerHTML = `
-      <iframe
-        src="https://www.youtube.com/embed/${VIDEO_ID}?autoplay=1&start=${START_TIME}&mute=1"
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen>
-      </iframe>
-    `;
-  }
+  document.body.innerHTML = `
+    <iframe
+      id="player"
+      src="https://www.youtube.com/embed/${VIDEO_ID}?autoplay=1&start=${START_TIME}&mute=1"
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
+
+    <button id="soundBtn" style="
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 20px;
+      font-size: 16px;
+    ">
+      🔊 소리 켜기
+    </button>
+  `;
+
+  document.getElementById("soundBtn").onclick = () => {
+    const iframe = document.getElementById("player");
+    iframe.src = iframe.src.replace("mute=1", "mute=0");
+  };
+}
+
 
   setInterval(checkTime, 500);
 </script>

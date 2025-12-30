@@ -49,27 +49,19 @@
 
     .count-3 { color: #ffb703; }
     .count-2 { color: #ff6b35; }
-    .count-1 {
-      color: #fff;
-      text-shadow: 0 0 40px white;
-    }
+    .count-1 { color: #fff; text-shadow: 0 0 40px white; }
 
     .count-animate {
       animation: pop 0.8s ease-out;
     }
 
     @keyframes pop {
-      0%   { opacity: 0; transform: scale(0.5) rotate(-5deg); }
-      50%  { opacity: 1; transform: scale(1.3) rotate(5deg); }
-      80%  { transform: scale(1.1) rotate(-3deg); }
-      100% { transform: scale(1) rotate(0deg); }
+      0%   { opacity: 0; transform: scale(0.5); }
+      60%  { opacity: 1; transform: scale(2); }
+      100% { transform: scale(1); }
     }
 
-    .video-wrapper {
-      max-width: 900px;
-      margin: 20px auto 0;
-      padding: 0 12px;
-    }
+    .video-wrapper { max-width: 900px; margin: 20px auto 0; padding: 0 12px; }
 
     .video-container {
       position: relative;
@@ -80,12 +72,7 @@
       box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     }
 
-    iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-    }
+    iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
 
     .sound-top {
       display: flex;
@@ -133,9 +120,7 @@
       #final-countdown { font-size: 2rem; }
     }
 
-    .flash {
-      animation: flash 0.4s ease;
-    }
+    .flash { animation: flash 0.4s ease; }
 
     @keyframes flash {
       0% { background: white; }
@@ -165,12 +150,9 @@
 
   <div class="video-wrapper">
     <div class="sound-top">
-      <div id="soundNotice" class="sound-notice">
-        광고 스킵 후 기다려주세요
-      </div>
+      <div id="soundNotice" class="sound-notice">광고 스킵 후 기다려주세요</div>
       <button id="soundBtn" class="hidden">🔊 소리 ON</button>
     </div>
-
     <div class="video-container">
       <div id="player"></div>
     </div>
@@ -205,12 +187,7 @@
           rel: 0,
           modestbranding: 1
         },
-        events: {
-          onReady: () => {
-            videoReady = true;
-            player.playVideo();
-          }
-        }
+        events: { onReady: () => { videoReady = true; player.playVideo(); } }
       });
     }
 
@@ -218,7 +195,6 @@
       if (!videoReady || hasSeekedOnce) return;
       player.seekTo(SEEK_POINT, true);
       hasSeekedOnce = true;
-
       document.getElementById("soundNotice").textContent = "지금부터 소리 ON!";
       document.getElementById("soundBtn").classList.remove("hidden");
     }
@@ -226,23 +202,13 @@
     const soundBtn = document.getElementById("soundBtn");
     soundBtn.addEventListener("click", () => {
       if (!videoReady) return;
-
-      if (isMuted) {
-        player.unMute();
-        player.setVolume(100);
-        isMuted = false;
-        soundBtn.textContent = "🔇 소리 OFF";
-      } else {
-        player.mute();
-        isMuted = true;
-        soundBtn.textContent = "🔊 소리 ON";
-      }
+      if (isMuted) { player.unMute(); player.setVolume(100); isMuted = false; soundBtn.textContent="🔇 소리 OFF"; }
+      else { player.mute(); isMuted = true; soundBtn.textContent="🔊 소리 ON"; }
     });
 
     function updateCountdown() {
       const now = new Date();
       const diff = TARGET_TIME - now;
-
       const timeEl = document.getElementById("time-remaining");
       const finalEl = document.getElementById("final-countdown");
 
@@ -257,24 +223,19 @@
         return;
       }
 
-      const totalSec = Math.floor(diff / 1000);
-      const min = Math.floor(totalSec / 60);
+      const totalSec = Math.floor(diff/1000);
+      const min = Math.floor(totalSec/60);
       const sec = totalSec % 60;
 
-      timeEl.textContent = `남은 시간 ${min}:${sec.toString().padStart(2, "0")}`;
+      timeEl.textContent = `남은 시간 ${min}:${sec.toString().padStart(2,"0")}`;
 
-      if (totalSec > COUNTDOWN_START_SEC) {
-        finalEl.textContent = "올 한 해 고생했어🫳🫳";
-        finalEl.className = "";
-        return;
-      }
+      if (totalSec > COUNTDOWN_START_SEC) { finalEl.textContent="올 한 해 고생했어🫳🫳"; finalEl.className=""; return; }
 
       finalEl.textContent = totalSec;
       finalEl.className = "count-number count-animate";
-
-      if (totalSec === 3) finalEl.classList.add("count-3");
-      if (totalSec === 2) finalEl.classList.add("count-2");
-      if (totalSec === 1) finalEl.classList.add("count-1");
+      if (totalSec===3) finalEl.classList.add("count-3");
+      if (totalSec===2) finalEl.classList.add("count-2");
+      if (totalSec===1) finalEl.classList.add("count-1");
 
       if (lastSecond !== totalSec) {
         finalEl.classList.remove("count-animate");
@@ -286,44 +247,45 @@
 
     setInterval(updateCountdown, 1000);
 
-    // 폭죽 효과
+    // 폭죽 한 번만
     function showFireworks() {
       const canvas = document.getElementById('fireworks');
       const ctx = canvas.getContext('2d');
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
 
-      const particles = [];
-      for (let i=0; i<100; i++){
-        particles.push({
-          x: canvas.width/2,
-          y: canvas.height/2,
-          vx: (Math.random()-0.5)*10,
-          vy: (Math.random()-0.5)*10,
-          alpha: 1,
-          color: `hsl(${Math.random()*360},100%,50%)`
-        });
-      }
+      const centerY = window.innerHeight/2 - 50;
+      const leftX = window.innerWidth/2 - 150;
+      const rightX = window.innerWidth/2 + 150;
 
-      function animate() {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        particles.forEach(p => {
-          ctx.fillStyle = p.color;
-          ctx.globalAlpha = p.alpha;
-          ctx.beginPath();
-          ctx.arc(p.x,p.y,3,0,Math.PI*2);
-          ctx.fill();
-          p.x += p.vx;
-          p.y += p.vy;
-          p.alpha -= 0.02;
-        });
-        if(particles.some(p=>p.alpha>0)){
-          requestAnimationFrame(animate);
+      const positions = [leftX, rightX];
+      positions.forEach(cx => {
+        const particles = [];
+        for(let i=0;i<50;i++){
+          particles.push({
+            x: cx,
+            y: centerY,
+            vx: (Math.random()-0.5)*8,
+            vy: (Math.random()-0.5)*8,
+            alpha: 1,
+            color: `hsl(${Math.random()*360},100%,50%)`
+          });
         }
-      }
-      animate();
+        function animate() {
+          ctx.clearRect(cx-160, centerY-160, 320, 320);
+          particles.forEach(p=>{
+            ctx.fillStyle=p.color;
+            ctx.globalAlpha=p.alpha;
+            ctx.beginPath();
+            ctx.arc(p.x,p.y,3,0,Math.PI*2);
+            ctx.fill();
+            p.x+=p.vx; p.y+=p.vy; p.alpha-=0.02;
+          });
+          if(particles.some(p=>p.alpha>0)) requestAnimationFrame(animate);
+        }
+        animate();
+      });
     }
   </script>
-
 </body>
 </html>

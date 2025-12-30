@@ -19,6 +19,7 @@
     margin-top: 40px;
     font-size: 2.4rem;
   }
+
   @media (max-width: 500px) {
     h1 { font-size: 1.8rem; margin-top: 20px; }
   }
@@ -27,13 +28,13 @@
     margin-top: 10px;
     font-size: 1.1rem;
     opacity: 0.7;
-    min-height: 1.2em; /* 안내문 자리 유지 */
+    min-height: 1.2em; /* 자리 유지 */
   }
 
   #final-countdown {
     margin-top: 20px;
     min-height: 6rem;
-    font-size: 2.4rem;
+    font-size: 2.2rem; /* 모바일에서 h1보다 작게 */
     font-weight: 600;
     opacity: 0.85;
     transition: all 0.4s ease;
@@ -73,20 +74,19 @@
     padding:0 10px;
     position:relative;
     z-index:20;
-    min-height: 2em; /* 안내문 자리 유지 */
   }
   .sound-notice {
     font-size:1rem;
     opacity:0.85;
     animation: fadePulse 2s ease-in-out infinite;
     word-break: keep-all;
-    min-height:1.2em; /* 숨겨도 자리 유지 */
+    min-height:1.2em; /* 자리 유지 */
   }
   @keyframes fadePulse {
     0%{opacity:0.4;}50%{opacity:1;}100%{opacity:0.4;}
   }
 
-  .hidden { visibility: hidden; } /* display:none -> 자리 유지 */
+  .hidden { visibility:hidden; } /* 자리 유지하면서 숨김 */
 
   button {
     padding: 14px 28px;
@@ -102,29 +102,25 @@
   }
   button:active { transform: scale(0.95); }
 
-  /* FINAL TEXT */
+  @media (max-width: 500px){
+    .sound-notice { font-size:0.9rem; }
+    button { font-size:15px; padding:12px 24px; min-width:120px; }
+    #final-countdown { font-size:1.8rem; }
+    #final-text { font-size:12vw; } /* 화면폭에 맞춰 조정 */
+  }
+
   #final-text {
-    font-size: clamp(2rem, 8vw, 4rem); /* 화면폭에 맞춰 자동 조정 */
+    font-size:4rem;
     font-weight: 800;
     color: #fff9c0;
-    text-shadow: 0 0 30px #fff9c0, 0 0 60px #fff9c0, 0 0 90px #fff9c0;
+    text-shadow: 0 0 60px #fff9c0, 0 0 60px #fff9c0, 0 0 90px #fff9c0;
+    white-space: nowrap;
     display:inline-block;
-    max-width: 95%;
-    word-break: break-word;
-    white-space: normal;
     animation: glitter 1s ease-in-out infinite;
-    line-height: 1.1;
   }
   @keyframes glitter {
     0%,100%{ text-shadow: 0 0 30px #fff9c0,0 0 60px #fff9c0,0 0 90px #fff9c0; }
     50%{ text-shadow: 0 0 50px #fff9c0,0 0 80px #fff9c0,0 0 120px #fff9c0; }
-  }
-
-  /* iPhone Mini 특화 추가 */
-  @media (max-width: 375px){
-    #final-text {
-      font-size: clamp(1.8rem, 9vw, 3rem);
-    }
   }
 </style>
 </head>
@@ -144,7 +140,7 @@
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const TARGET_TIME = new Date("2025-12-31T02:20:00+09:00");
+const TARGET_TIME = new Date("2025-12-31T02:30:00+09:00");
 const SEEK_OFFSET_SEC = 193;
 const VIDEO_SEEK_TIME = new Date(TARGET_TIME.getTime() - SEEK_OFFSET_SEC*1000);
 const COUNTDOWN_START_SEC = 10;
@@ -159,7 +155,7 @@ function onYouTubeIframeAPIReady(){
     videoId: VIDEO_ID,
     playerVars:{
       autoplay:1, mute:1, loop:1, playlist:VIDEO_ID, controls:0, rel:0, modestbranding:1,
-      cc_load_policy: 1,
+      cc_load_policy: 1, // 자막 켜기
       cc_lang_pref: 'ko'
     },
     events:{ onReady:()=>{ videoReady=true; player.playVideo(); } }
@@ -191,8 +187,9 @@ function updateCountdown(){
 
   let totalSec=Math.floor(diff/1000);
 
+  // 남은 시간 표시, 지나도 자리 유지
   if(totalSec<0){
-    timeEl.textContent="";
+    timeEl.textContent=""; // 텍스트만 지움
   } else {
     timeEl.textContent=`남은 시간 ${Math.floor(totalSec/60)}:${(totalSec%60).toString().padStart(2,"0")}`;
   }

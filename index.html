@@ -1,70 +1,149 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>new year</title>
+  <meta charset="UTF-8" />
+  <title>2026년 이뤄낼 거니까</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 40px;
+      font-size: 2rem;
+      font-weight: 600;
+    }
+
+    #countdown {
+      margin: 20px 0 40px;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+
+    #player-area {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    iframe {
+      width: 90vw;
+      height: 50.6vw; /* 16:9 */
+      max-width: 1100px;
+      max-height: 620px;
+      border: none;
+    }
+
+    #soundBtn {
+      margin: 16px 0 40px;
+      padding: 10px 18px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* 모바일 */
+    @media (max-width: 768px) {
+      iframe {
+        width: 100vw;
+        height: 56.25vw;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<div id="container">
-  <h1 id="title">2026년 이뤄낼 거니까</h1>
-  <div id="status">대기 중...</div>
- <div id="player-area"></div>
-</div>
-  
+  <!-- 1. 타이틀 -->
+  <h1>2026년 이뤄낼 거니까</h1>
+
+  <!-- 2. 카운트다운 -->
+  <div id="countdown">카운트다운 준비 중…</div>
+
+  <!-- 3. 유튜브 영역 -->
+  <div id="player-area"></div>
+
 <script>
-  // ⚠️ 지금 시간보다 1~2분 뒤로 설정!
-  const TARGET_TIME = "17:20:00";
+  /* =========================
+     🔧 설정값 (가안)
+  ========================= */
+
+  // 새해 카운트다운 기준 시각 (한국 시간)
+  const COUNTDOWN_TARGET = new Date("2026-01-01T00:00:00+09:00");
+
+  // 유튜브 자동재생 시각 (카운트다운과 다름)
+  const VIDEO_PLAY_TIME = new Date("2026-01-01T00:00:05+09:00");
+
   const VIDEO_ID = "DElqg7XL-s4";
-  const START_TIME = 20;
+  const START_TIME = 20; // 초
 
-  let played = false;
+  let videoPlayed = false;
 
-  function checkTime() {
+  /* =========================
+     카운트다운 처리
+  ========================= */
+  function updateCountdown() {
+    const now = new Date();
+    const diff = COUNTDOWN_TARGET - now;
+
+    if (diff <= 0) {
+      document.getElementById("countdown").innerText =
+        "🎉 2026년 시작!";
+      return;
+    }
+
+    const sec = Math.floor(diff / 1000) % 60;
+    const min = Math.floor(diff / (1000 * 60)) % 60;
+    const hr  = Math.floor(diff / (1000 * 60 * 60)) % 24;
+    const day = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    document.getElementById("countdown").innerText =
+      `${day}일 ${hr}시간 ${min}분 ${sec}초`;
+  }
+
+  /* =========================
+     유튜브 재생
+  ========================= */
+  function checkVideoTime() {
     const now = new Date();
 
-    const target = new Date();
-    const [h, m, s] = TARGET_TIME.split(":");
-    target.setHours(h, m, s, 0);
-
-    document.getElementById("status").innerText =
-      "현재 시각: " + now.toTimeString().split(" ")[0];
-
-    if (now >= target && !played) {
-      played = true;
+    if (now >= VIDEO_PLAY_TIME && !videoPlayed) {
+      videoPlayed = true;
       playVideo();
     }
   }
 
   function playVideo() {
- document.getElementById("player-area").innerHTML = `
+    const area = document.getElementById("player-area");
+
+    area.innerHTML = `
       <iframe
+        id="player"
         src="https://www.youtube.com/embed/${VIDEO_ID}?autoplay=1&start=${START_TIME}&mute=1"
-        frameborder="0"
         allow="autoplay; encrypted-media"
         allowfullscreen>
       </iframe>
 
-    <button id="soundBtn" style="
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 12px 20px;
-      font-size: 16px;
-    ">
-      🔊 소리 켜기
-    </button>
-  `;
+      <button id="soundBtn">🔊 소리 켜기</button>
+    `;
 
-  document.getElementById("soundBtn").onclick = () => {
-    const iframe = document.getElementById("player");
-    iframe.src = iframe.src.replace("mute=1", "mute=0");
-  };
-}
+    document.getElementById("soundBtn").onclick = () => {
+      const iframe = document.getElementById("player");
+      iframe.src = iframe.src.replace("mute=1", "mute=0");
+    };
+  }
 
-
-  setInterval(checkTime, 500);
+  /* =========================
+     타이머 시작
+  ========================= */
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+  setInterval(checkVideoTime, 500);
 </script>
 
 </body>

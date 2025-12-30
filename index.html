@@ -3,166 +3,223 @@
 <head>
   <meta charset="UTF-8" />
   <title>2026년 이뤄낼 거니까</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
-    :root {
-      --gold: #f5d76e;
-      --soft-white: rgba(255,255,255,0.85);
-    }
-
     body {
       margin: 0;
-      min-height: 100vh;
+      font-family: 'Apple SD Gothic Neo', 'Pretendard', sans-serif;
       background: radial-gradient(circle at top, #1a1a2e, #000);
-      color: var(--soft-white);
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      color: white;
       text-align: center;
-      overflow-x: hidden;
+      transition: background 0.4s ease;
     }
 
     h1 {
-      margin-top: 48px;
-      font-size: 2.2rem;
-      font-weight: 600;
-      letter-spacing: 1px;
-    }
-
-    #countdown {
-      margin: 24px 0 40px;
-      font-size: 1.6rem;
-      transition: all 0.3s ease;
-    }
-
-    /* 🔥 10초 전 강조 */
-    #countdown.final {
-      color: var(--gold);
+      margin-top: 40px;
       font-size: 2.4rem;
-      animation: pulse 1s infinite;
+      letter-spacing: -0.02em;
     }
 
-    @keyframes pulse {
-      0%   { opacity: 1; }
-      50%  { opacity: 0.6; }
-      100% { opacity: 1; }
+    /* 남은 시간 */
+    #time-remaining {
+      font-size: 1.1rem;
+      opacity: 0.7;
+      margin-top: 12px;
     }
 
-    #player-area {
+    /* 중앙 메시지 / 카운트다운 */
+    #final-countdown {
+      margin-top: 20px;
+      min-height: 6rem;
+      font-size: 2.4rem;
+      font-weight: 600;
+      opacity: 0.85;
+      transition: all 0.6s ease;
+    }
+
+    /* 10초 카운트다운 숫자 */
+    .count-number {
+      font-size: 5rem;
+      font-weight: 800;
+      color: #ffd369;
+      text-shadow: 0 0 30px rgba(255, 211, 105, 0.6);
+    }
+
+    /* 색상 변화 */
+    .count-3 { color: #ffb703; }
+    .count-2 { color: #ff6b35; }
+    .count-1 {
+      color: #ffffff;
+      text-shadow: 0 0 40px white;
+    }
+
+    /* 숫자 애니메이션 */
+    .count-animate {
+      animation: pop 0.8s ease-out;
+    }
+
+    @keyframes pop {
+      0% { opacity: 0; transform: scale(0.6); }
+      60% { opacity: 1; transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    /* 영상 영역 */
+    .video-wrapper {
+      max-width: 900px;
+      margin: 40px auto 0;
+      padding: 0 12px;
+    }
+
+    .video-container {
+      position: relative;
       width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      padding-top: 56.25%;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     }
 
     iframe {
-      width: 90vw;
-      height: 50.6vw;
-      max-width: 1100px;
-      max-height: 620px;
-      border-radius: 12px;
-      box-shadow: 0 0 40px rgba(255, 215, 110, 0.2);
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
     }
 
-    #soundBtn {
-      margin: 18px 0 50px;
-      padding: 12px 22px;
-      font-size: 1rem;
-      border-radius: 24px;
+    button {
+      margin: 18px auto 60px;
+      padding: 14px 28px;
+      font-size: 16px;
+      border-radius: 30px;
       border: none;
-      background: linear-gradient(135deg, #f5d76e, #e0b84c);
-      color: #000;
       cursor: pointer;
+      background: linear-gradient(135deg, #ffd369, #ff9f45);
+      color: #000;
+      font-weight: 600;
+      display: none;
     }
 
-    #soundBtn:hover {
-      transform: scale(1.05);
+    /* 0초 플래시 */
+    .flash {
+      animation: flash 0.4s ease;
     }
 
-    /* 모바일 */
-    @media (max-width: 768px) {
-      iframe {
-        width: 100vw;
-        height: 56.25vw;
-        border-radius: 0;
-      }
+    @keyframes flash {
+      0% { background: white; }
+      100% { background: radial-gradient(circle at top, #1a1a2e, #000); }
     }
   </style>
 </head>
 
 <body>
 
-  <h1>2026년 이뤄낼 거니까💫</h1>
-  <div id="countdown">카운트다운 준비 중…</div>
+  <h1>💫2026년 이뤄낼 거니까💫</h1>
 
-  <div id="player-area"></div>
+  <div id="time-remaining"></div>
+  <div id="final-countdown">끝이 기다리는 시작으로</div>
 
-<script>
-  /* =========================
-     🔧 설정값 (가안)
-  ========================= */
-  const COUNTDOWN_TARGET = new Date("2025-12-30T17:40:00+09:00");
-  const VIDEO_PLAY_TIME  = new Date("2025-12-30T17:39:00+09:00");
+  <div class="video-wrapper">
+    <div class="video-container">
+      <div id="player"></div>
+    </div>
+    <button id="soundBtn">🔊 소리 켜기</button>
+  </div>
 
-  const VIDEO_ID = "DElqg7XL-s4";
-  const START_TIME = 20;
+  <!-- YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
 
-  let videoPlayed = false;
+  <script>
+    /* ===== 설정 ===== */
+    const TARGET_TIME = new Date("2025-12-30T18:05:00+09:00"); // 한국 시간
+    const VIDEO_ID = "DElqg7XL-s4";
+    const START_TIME = 20; // 영상 시작 초
+    const VIDEO_START_AT = 201; // 201초 남았을 때 영상 시작
 
-  function updateCountdown() {
-    const now = new Date();
-    const diff = COUNTDOWN_TARGET - now;
-    const countdownEl = document.getElementById("countdown");
+    let player;
+    let videoStarted = false;
+    let lastSecond = null;
 
-    if (diff <= 0) {
-      countdownEl.innerText = "🎉 HAPPY NEW YEAR!";
-      countdownEl.classList.remove("final");
-      return;
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player("player", {
+        videoId: VIDEO_ID,
+        playerVars: {
+          autoplay: 0,
+          start: START_TIME,
+          controls: 0,
+          rel: 0,
+          modestbranding: 1
+        }
+      });
     }
 
-    const totalSec = Math.floor(diff / 1000);
-    const sec = totalSec % 60;
-    const min = Math.floor(totalSec / 60) % 60;
-    const hr  = Math.floor(totalSec / 3600) % 24;
-    const day = Math.floor(totalSec / 86400);
+    function startVideo() {
+      if (videoStarted) return;
+      videoStarted = true;
 
-    countdownEl.innerText =
-      `${day}일 ${hr}시간 ${min}분 ${sec}초`;
-
-    // 🔥 10초 전 강조
-    if (totalSec <= 10) {
-      countdownEl.classList.add("final");
+      player.mute();
+      player.playVideo();
+      document.getElementById("soundBtn").style.display = "inline-block";
     }
-  }
-
-  function checkVideoTime() {
-    const now = new Date();
-    if (now >= VIDEO_PLAY_TIME && !videoPlayed) {
-      videoPlayed = true;
-      playVideo();
-    }
-  }
-
-  function playVideo() {
-    const area = document.getElementById("player-area");
-    area.innerHTML = `
-      <iframe
-        id="player"
-        src="https://www.youtube.com/embed/${VIDEO_ID}?autoplay=1&start=${START_TIME}&mute=1"
-        allow="autoplay; encrypted-media"
-        allowfullscreen>
-      </iframe>
-      <button id="soundBtn">🔊 소리 켜기</button>
-    `;
 
     document.getElementById("soundBtn").onclick = () => {
-      const iframe = document.getElementById("player");
-      iframe.src = iframe.src.replace("mute=1", "mute=0");
+      player.unMute();
     };
-  }
 
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-  setInterval(checkVideoTime, 500);
-</script>
+    function updateCountdown() {
+      const now = new Date();
+      const diff = TARGET_TIME - now;
+
+      const timeEl = document.getElementById("time-remaining");
+      const finalEl = document.getElementById("final-countdown");
+
+      if (diff <= 0) {
+        timeEl.textContent = "";
+        finalEl.textContent = "HAPPY NEW YEAR";
+        finalEl.className = "";
+        finalEl.style.fontSize = "3rem";
+
+        document.body.classList.add("flash");
+        startVideo();
+        return;
+      }
+
+      const totalSec = Math.floor(diff / 1000);
+      const min = Math.floor(totalSec / 60);
+      const sec = totalSec % 60;
+
+      timeEl.textContent = `남은 시간 ${min}:${sec.toString().padStart(2, "0")}`;
+
+      if (totalSec > 10) {
+        finalEl.textContent = "끝이 기다리는 시작으로";
+        finalEl.className = "";
+        finalEl.style.fontSize = "2.4rem";
+        return;
+      }
+
+      /* 10초 카운트다운 */
+      finalEl.textContent = totalSec;
+      finalEl.className = "count-number count-animate";
+
+      if (totalSec === 3) finalEl.classList.add("count-3");
+      if (totalSec === 2) finalEl.classList.add("count-2");
+      if (totalSec === 1) finalEl.classList.add("count-1");
+
+      if (lastSecond !== totalSec) {
+        finalEl.classList.remove("count-animate");
+        void finalEl.offsetWidth;
+        finalEl.classList.add("count-animate");
+        lastSecond = totalSec;
+      }
+
+      if (totalSec === VIDEO_START_AT) {
+        startVideo();
+      }
+    }
+
+    setInterval(updateCountdown, 200);
+  </script>
 
 </body>
 </html>

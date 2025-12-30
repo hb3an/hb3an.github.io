@@ -2,27 +2,48 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>2026년 이뤄낼 거니까</title>
+  <title>2026년 이뤄낼 거니까💫</title>
 
   <style>
+    :root {
+      --gold: #f5d76e;
+      --soft-white: rgba(255,255,255,0.85);
+    }
+
     body {
       margin: 0;
-      background: #000;
-      color: #fff;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1a1a2e, #000);
+      color: var(--soft-white);
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       text-align: center;
+      overflow-x: hidden;
     }
 
     h1 {
-      margin-top: 40px;
-      font-size: 2rem;
+      margin-top: 48px;
+      font-size: 2.2rem;
       font-weight: 600;
+      letter-spacing: 1px;
     }
 
     #countdown {
-      margin: 20px 0 40px;
-      font-size: 1.5rem;
-      letter-spacing: 1px;
+      margin: 24px 0 40px;
+      font-size: 1.6rem;
+      transition: all 0.3s ease;
+    }
+
+    /* 🔥 10초 전 강조 */
+    #countdown.final {
+      color: var(--gold);
+      font-size: 2.4rem;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%   { opacity: 1; }
+      50%  { opacity: 0.6; }
+      100% { opacity: 1; }
     }
 
     #player-area {
@@ -34,17 +55,26 @@
 
     iframe {
       width: 90vw;
-      height: 50.6vw; /* 16:9 */
+      height: 50.6vw;
       max-width: 1100px;
       max-height: 620px;
-      border: none;
+      border-radius: 12px;
+      box-shadow: 0 0 40px rgba(255, 215, 110, 0.2);
     }
 
     #soundBtn {
-      margin: 16px 0 40px;
-      padding: 10px 18px;
+      margin: 18px 0 50px;
+      padding: 12px 22px;
       font-size: 1rem;
+      border-radius: 24px;
+      border: none;
+      background: linear-gradient(135deg, #f5d76e, #e0b84c);
+      color: #000;
       cursor: pointer;
+    }
+
+    #soundBtn:hover {
+      transform: scale(1.05);
     }
 
     /* 모바일 */
@@ -52,6 +82,7 @@
       iframe {
         width: 100vw;
         height: 56.25vw;
+        border-radius: 0;
       }
     }
   </style>
@@ -59,59 +90,51 @@
 
 <body>
 
-  <!-- 1. 타이틀 -->
   <h1>2026년 이뤄낼 거니까</h1>
-
-  <!-- 2. 카운트다운 -->
   <div id="countdown">카운트다운 준비 중…</div>
 
-  <!-- 3. 유튜브 영역 -->
   <div id="player-area"></div>
 
 <script>
   /* =========================
      🔧 설정값 (가안)
   ========================= */
-
-  // 새해 카운트다운 기준 시각 (한국 시간)
-  const COUNTDOWN_TARGET = new Date("2025-12-30T17:30:00+09:00");
-
-  // 유튜브 자동재생 시각 (카운트다운과 다름)
-  const VIDEO_PLAY_TIME = new Date("2025-12-30T17:29:00+09:00");
+  const COUNTDOWN_TARGET = new Date("2025-12-30T17:40:00+09:00");
+  const VIDEO_PLAY_TIME  = new Date("2025-12-30T17:38:05+09:00");
 
   const VIDEO_ID = "DElqg7XL-s4";
-  const START_TIME = 20; // 초
+  const START_TIME = 20;
 
   let videoPlayed = false;
 
-  /* =========================
-     카운트다운 처리
-  ========================= */
   function updateCountdown() {
     const now = new Date();
     const diff = COUNTDOWN_TARGET - now;
+    const countdownEl = document.getElementById("countdown");
 
     if (diff <= 0) {
-      document.getElementById("countdown").innerText =
-        "🎉 2026년 시작!";
+      countdownEl.innerText = "🎉 2026년 시작!";
+      countdownEl.classList.remove("final");
       return;
     }
 
-    const sec = Math.floor(diff / 1000) % 60;
-    const min = Math.floor(diff / (1000 * 60)) % 60;
-    const hr  = Math.floor(diff / (1000 * 60 * 60)) % 24;
-    const day = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const totalSec = Math.floor(diff / 1000);
+    const sec = totalSec % 60;
+    const min = Math.floor(totalSec / 60) % 60;
+    const hr  = Math.floor(totalSec / 3600) % 24;
+    const day = Math.floor(totalSec / 86400);
 
-    document.getElementById("countdown").innerText =
+    countdownEl.innerText =
       `${day}일 ${hr}시간 ${min}분 ${sec}초`;
+
+    // 🔥 10초 전 강조
+    if (totalSec <= 10) {
+      countdownEl.classList.add("final");
+    }
   }
 
-  /* =========================
-     유튜브 재생
-  ========================= */
   function checkVideoTime() {
     const now = new Date();
-
     if (now >= VIDEO_PLAY_TIME && !videoPlayed) {
       videoPlayed = true;
       playVideo();
@@ -120,7 +143,6 @@
 
   function playVideo() {
     const area = document.getElementById("player-area");
-
     area.innerHTML = `
       <iframe
         id="player"
@@ -128,7 +150,6 @@
         allow="autoplay; encrypted-media"
         allowfullscreen>
       </iframe>
-
       <button id="soundBtn">🔊 소리 켜기</button>
     `;
 
@@ -138,9 +159,6 @@
     };
   }
 
-  /* =========================
-     타이머 시작
-  ========================= */
   updateCountdown();
   setInterval(updateCountdown, 1000);
   setInterval(checkVideoTime, 500);

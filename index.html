@@ -2,13 +2,49 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>My Vibe Site</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Time Trigger YouTube</title>
 </head>
 <body>
-  <h1>오늘의 기분 🌿</h1>
-  <p>느낌 가는 대로 만드는 중</p>
 
-  <script src="script.js"></script>
+<div id="status">대기 중...</div>
+
+<script>
+  // ⚠️ 지금 시간보다 1~2분 뒤로 설정!
+  const TARGET_TIME = "16:52:00";
+  const VIDEO_ID = "DElqg7XL-s4";
+  const START_TIME = 20;
+
+  let played = false;
+
+  function checkTime() {
+    const now = new Date();
+
+    const target = new Date();
+    const [h, m, s] = TARGET_TIME.split(":");
+    target.setHours(h, m, s, 0);
+
+    document.getElementById("status").innerText =
+      "현재 시각: " + now.toTimeString().split(" ")[0];
+
+    if (now >= target && !played) {
+      played = true;
+      playVideo();
+    }
+  }
+
+  function playVideo() {
+    document.body.innerHTML = `
+      <iframe
+        src="https://www.youtube.com/embed/${VIDEO_ID}?autoplay=1&start=${START_TIME}&mute=1"
+        frameborder="0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen>
+      </iframe>
+    `;
+  }
+
+  setInterval(checkTime, 500);
+</script>
+
 </body>
 </html>

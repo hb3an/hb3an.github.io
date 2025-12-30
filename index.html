@@ -6,163 +6,158 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <style>
-body {
-  margin: 0;
-  font-family: 'Apple SD Gothic Neo', 'Pretendard', sans-serif;
-  background: radial-gradient(circle at top, #1a1a2e, #000);
-  color: white;
-  text-align: center;
-  overflow-x: hidden;
-  position: relative;
-}
-
-h1 {
-  margin-top: 40px;
-  font-size: 2.4rem;
-}
-
-@media (max-width: 500px) {
-  h1 { font-size: 1.8rem; margin-top: 20px; }
-}
-
-#time-remaining {
-  margin-top: 10px;
-  font-size: 1.1rem;
-  opacity: 0.7;
-}
-
-#final-countdown {
-  margin-top: 20px;
-  min-height: 6rem;
-  font-size: 2.4rem;
-  font-weight: 600;
-  opacity: 0.85;
-  transition: all 0.4s ease;
-  white-space: nowrap; /* 모바일 줄바꿈 방지 */
-}
-
-.count-number {
-  font-size: 7rem;
-  font-weight: 800;
-  color: #ffd369;
-  text-shadow: 0 0 30px rgba(255,211,105,0.6);
-}
-
-.count-3 { color: #ffb703; }
-.count-2 { color: #ff6b35; }
-.count-1 { color: #fff; text-shadow: 0 0 40px white; }
-
-.count-animate {
-  animation: pop 0.8s ease-out;
-}
-
-@keyframes pop {
-  0%   { opacity: 0; transform: scale(0.5); }
-  60%  { opacity: 1; transform: scale(2); }
-  100% { transform: scale(1); }
-}
-
-/* GOLD GLITTER */
-.glitter {
-  color: #fff9c4; /* 옅은 황금색 */
-  text-shadow: 
-    0 0 5px #fff9c4,
-    0 0 10px #fff59d,
-    0 0 15px #fff176,
-    0 0 20px #ffe57f,
-    0 0 30px #fff9c4;
-  background-clip: text;
-  -webkit-background-clip: text;
-  animation: glitter 1s infinite;
-}
-
-@keyframes glitter {
-  0%, 100% {
-    text-shadow: 
-      0 0 5px #fff9c4,
-      0 0 10px #fff59d,
-      0 0 15px #fff176,
-      0 0 20px #ffe57f,
-      0 0 30px #fff9c4;
+  body {
+    margin: 0;
+    font-family: 'Apple SD Gothic Neo', 'Pretendard', sans-serif;
+    background: radial-gradient(circle at top, #1a1a2e, #000);
+    color: white;
+    text-align: center;
+    overflow-x: hidden;
+    position: relative;
   }
-  50% {
-    text-shadow: 
-      0 0 10px #fff9c4,
-      0 0 20px #fff59d,
-      0 0 30px #fff176,
-      0 0 40px #ffe57f,
-      0 0 50px #fff9c4;
+
+  h1 {
+    margin-top: 40px;
+    font-size: 2.4rem;
   }
-}
 
-.video-wrapper { max-width: 900px; margin: 20px auto 0; padding: 0 12px; }
-.video-container {
-  position: relative;
-  width: 100%;
-  padding-top: 56.25%;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-}
-iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
+  @media (max-width: 500px) {
+    h1 { font-size: 1.8rem; margin-top: 20px; }
+  }
 
-.sound-top {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-bottom: 12px;
-  padding: 0 10px;
-  position: relative;
-  z-index: 20;
-}
+  #time-remaining {
+    margin-top: 10px;
+    font-size: 1.1rem;
+    opacity: 0.7;
+  }
 
-.sound-notice {
-  font-size: 1rem;
-  opacity: 0.85;
-  animation: fadePulse 2s ease-in-out infinite;
-  word-break: keep-all;
-}
+  #final-countdown {
+    margin-top: 20px;
+    min-height: 6rem;
+    font-weight: 600;
+    opacity: 0.85;
+    transition: all 0.4s ease;
+  }
 
-@keyframes fadePulse {
-  0% { opacity: 0.4; }
-  50% { opacity: 1; }
-  100% { opacity: 0.4; }
-}
+  /* 숫자 pop 애니메이션 + 글로우 */
+  .count-number {
+    font-size: 7rem;
+    font-weight: 800;
+    color: #ffd369;
+    text-shadow: 
+      0 0 10px rgba(255,211,105,0.6),
+      0 0 20px rgba(255,211,105,0.4),
+      0 0 30px rgba(255,211,105,0.3);
+  }
+  .count-3 { color: #ffb703; }
+  .count-2 { color: #ff6b35; }
+  .count-1 { color: #fff; text-shadow: 0 0 10px #fff, 0 0 20px #fff; }
 
-.hidden { display: none; }
+  .count-animate {
+    animation: pop 0.8s ease-out;
+  }
 
-button {
-  padding: 14px 28px;
-  font-size: 16px;
-  border-radius: 30px;
-  border: none;
-  cursor: pointer;
-  background: linear-gradient(135deg, #ffd369, #ff9f45);
-  color: #000;
-  font-weight: 600;
-  min-width: 140px;
-  transition: transform 0.1s ease;
-}
-button:active { transform: scale(0.95); }
+  @keyframes pop {
+    0%   { opacity: 0; transform: scale(0.5); }
+    60%  { opacity: 1; transform: scale(2); }
+    100% { transform: scale(1); }
+  }
 
-@media (max-width: 500px) {
-  .sound-notice { font-size: 0.9rem; }
-  button { font-size: 15px; padding: 12px 24px; min-width: 120px; }
-  #final-countdown { font-size: 2rem; }
-}
+  /* HAPPY NEW YEAR 글자 스타일 */
+  #final-countdown.glitter {
+    color: #fffacd; /* 옅은 황금빛 */
+    text-shadow: 
+      0 0 15px #fffacd, 
+      0 0 30px #fffacd,
+      0 0 45px #fffacd,
+      0 0 60px #fffacd;
+    font-size: clamp(2rem, 8vw, 3rem);
+    white-space: nowrap;
+  }
 
-.flash { animation: flash 0.4s ease; }
-@keyframes flash { 0% { background: white; } 100% { background: radial-gradient(circle at top, #1a1a2e, #000); } }
+  /* 올 한 해 고생했어 텍스트 글로우 */
+  #final-countdown.default-text {
+    color: #ffffff;
+    text-shadow: 
+      0 0 10px #fff, 
+      0 0 20px #fff,
+      0 0 30px #fff;
+  }
+
+  .video-wrapper {
+    max-width: 900px;
+    margin: 20px auto 0;
+    padding: 0 12px;
+  }
+
+  .video-container {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .sound-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 0 10px;
+    position: relative;
+    z-index: 20;
+  }
+
+  .sound-notice {
+    font-size: 1rem;
+    opacity: 0.85;
+    animation: fadePulse 2s ease-in-out infinite;
+    word-break: keep-all;
+  }
+
+  @keyframes fadePulse {
+    0% { opacity: 0.4; }
+    50% { opacity: 1; }
+    100% { opacity: 0.4; }
+  }
+
+  .hidden { display: none; }
+
+  button {
+    padding: 14px 28px;
+    font-size: 16px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ffd369, #ff9f45);
+    color: #000;
+    font-weight: 600;
+    min-width: 140px;
+    transition: transform 0.1s ease;
+  }
+  button:active { transform: scale(0.95); }
+
+  @media (max-width: 500px) {
+    .sound-notice { font-size: 0.9rem; }
+    button { font-size: 15px; padding: 12px 24px; min-width: 120px; }
+  }
 </style>
 </head>
 
 <body>
 <h1>💫2026년 이뤄낼 거니까💫</h1>
-
 <div id="time-remaining"></div>
-<div id="final-countdown" style="color:white;">올 한 해 고생했어🫳🫳</div>
+<div id="final-countdown" class="default-text">올 한 해 고생했어🫳🫳</div>
 
 <div class="video-wrapper">
   <div class="sound-top">
@@ -176,7 +171,7 @@ button:active { transform: scale(0.95); }
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const TARGET_TIME = new Date("2025-12-31T00:20:00+09:00");
+const TARGET_TIME = new Date("2025-12-31T00:40:00+09:00");
 const SEEK_OFFSET_SEC = 193;
 const VIDEO_SEEK_TIME = new Date(TARGET_TIME.getTime() - SEEK_OFFSET_SEC * 1000);
 const COUNTDOWN_START_SEC = 10;
@@ -190,67 +185,61 @@ function onYouTubeIframeAPIReady() {
   player = new YT.Player("player", {
     videoId: VIDEO_ID,
     playerVars: { autoplay:1, mute:1, loop:1, playlist:VIDEO_ID, controls:0, rel:0, modestbranding:1 },
-    events: { onReady: () => { videoReady=true; player.playVideo(); } }
+    events: { onReady: ()=>{ videoReady=true; player.playVideo(); } }
   });
 }
 
 function seekVideoOnce() {
-  if(!videoReady||hasSeekedOnce) return;
+  if(!videoReady || hasSeekedOnce) return;
   player.seekTo(SEEK_POINT,true);
   hasSeekedOnce = true;
-  document.getElementById("soundNotice").textContent="지금부터 소리 ON!";
+  document.getElementById("soundNotice").classList.add("hidden");
   document.getElementById("soundBtn").classList.remove("hidden");
 }
 
-const soundBtn=document.getElementById("soundBtn");
-soundBtn.addEventListener("click",()=>{
+document.getElementById("soundBtn").addEventListener("click", function(){
   if(!videoReady) return;
-  if(isMuted){ player.unMute(); player.setVolume(100); isMuted=false; soundBtn.textContent="🔇 소리 OFF"; }
-  else{ player.mute(); isMuted=true; soundBtn.textContent="🔊 소리 ON"; }
+  if(isMuted) { player.unMute(); player.setVolume(100); isMuted=false; document.getElementById("soundNotice").classList.add("hidden"); this.textContent="🔇 소리 OFF"; }
+  else { player.mute(); isMuted=true; this.textContent="🔊 소리 ON"; }
 });
 
 function updateCountdown() {
-  const now=new Date();
-  const diff=TARGET_TIME-now;
-  const timeEl=document.getElementById("time-remaining");
-  const finalEl=document.getElementById("final-countdown");
+  const now = new Date();
+  let diff = TARGET_TIME - now;
+  const totalSec = Math.floor(diff/1000);
+  const timeEl = document.getElementById("time-remaining");
+  const finalEl = document.getElementById("final-countdown");
 
   if(now >= VIDEO_SEEK_TIME) seekVideoOnce();
 
-  let totalSec=Math.floor(diff/1000);
-
-  if(totalSec <= 0){
+  if(diff <= 0) {
     timeEl.textContent="";
     finalEl.textContent="HAPPY NEW YEAR";
-    finalEl.style.fontSize="3rem";
     finalEl.className="glitter";
-    document.body.classList.add("flash");
     return;
   }
 
-  if(totalSec > COUNTDOWN_START_SEC){
+  timeEl.textContent = `남은 시간 ${Math.floor(totalSec/60)}:${(totalSec%60).toString().padStart(2,"0")}`;
+
+  if(totalSec > COUNTDOWN_START_SEC) {
     finalEl.textContent="올 한 해 고생했어🫳🫳";
-    finalEl.style.color="white";
-    finalEl.className="";
-    timeEl.textContent=`남은 시간 ${Math.floor(totalSec/60)}:${(totalSec%60).toString().padStart(2,"0")}`;
+    finalEl.className="default-text";
     return;
   }
 
-  finalEl.textContent = totalSec===0? "HAPPY NEW YEAR" : totalSec;
-  finalEl.className = totalSec===0? "glitter" : "count-number count-animate";
+  let displaySec = totalSec===0 ? 1 : totalSec; // 0 대신 1초 후 HAPPY NEW YEAR
+  finalEl.textContent = displaySec;
+  finalEl.className="count-number count-animate";
+  if(displaySec===3) finalEl.classList.add("count-3");
+  if(displaySec===2) finalEl.classList.add("count-2");
+  if(displaySec===1) finalEl.classList.add("count-1");
 
-  if(totalSec===3) finalEl.classList.add("count-3");
-  if(totalSec===2) finalEl.classList.add("count-2");
-  if(totalSec===1) finalEl.classList.add("count-1");
-
-  if(lastSecond !== totalSec && totalSec!==0){
+  if(lastSecond !== displaySec){
     finalEl.classList.remove("count-animate");
     void finalEl.offsetWidth;
     finalEl.classList.add("count-animate");
-    lastSecond = totalSec;
+    lastSecond = displaySec;
   }
-
-  timeEl.textContent=`남은 시간 ${Math.floor(totalSec/60)}:${(totalSec%60).toString().padStart(2,"0")}`;
 }
 
 setInterval(updateCountdown,1000);

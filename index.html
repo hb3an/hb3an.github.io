@@ -122,17 +122,14 @@
 
 <body>
 
-  <h2>💫2026년 이뤄낼 거니까💫</h2>
+  <h1>💫2026년 이뤄낼 거니까💫</h1>
 
   <div id="time-remaining"></div>
-  <div id="final-countdown">GOODBYE 2025</div>
+  <div id="final-countdown">올 한 해 고생했어🫳🫳</div>
 
   <div class="video-wrapper">
-    <div class="video-container">
-      <div id="player"></div>
-    </div>
-
-    <!-- 안내 문구 (처음부터 항상 표시) -->
+    
+      <!-- 안내 문구 (처음부터 항상 표시) -->
     <div id="soundNotice" class="sound-notice">
       광고 스킵 후 기다려주세요
     </div>
@@ -140,6 +137,12 @@
     <!-- 수동 소리 ON -->
     <button id="soundBtn" class="hidden">🔊 소리 ON</button>
   </div>
+  
+    <div class="video-container">
+      <div id="player"></div>
+    </div>
+
+  
 
   <script src="https://www.youtube.com/iframe_api"></script>
 
@@ -235,7 +238,7 @@ document.getElementById("soundBtn").addEventListener("click", () => {
       timeEl.textContent = `남은 시간 ${min}:${sec.toString().padStart(2, "0")}`;
 
       if (totalSec > COUNTDOWN_START_SEC) {
-        finalEl.textContent = "GOODBYE 2025";
+        finalEl.textContent = "올 한 해 고생했어🫳🫳";
         finalEl.className = "";
         return;
       }

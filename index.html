@@ -103,6 +103,7 @@
     .sound-notice { font-size:0.9rem; }
     button { font-size:15px; padding:12px 24px; min-width:120px; }
     #final-countdown { font-size:2rem; }
+    #final-text { font-size:2rem; } /* 모바일 폰트 작게 */
   }
 
   #final-text {
@@ -137,7 +138,7 @@
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const TARGET_TIME = new Date("2025-12-31T00:50:00+09:00");
+const TARGET_TIME = new Date("2025-12-31T01:08:00+09:00");
 const SEEK_OFFSET_SEC = 193;
 const VIDEO_SEEK_TIME = new Date(TARGET_TIME.getTime() - SEEK_OFFSET_SEC*1000);
 const COUNTDOWN_START_SEC = 10;
@@ -162,7 +163,7 @@ function seekVideoOnce(){
   document.getElementById("soundBtn").classList.remove("hidden");
 }
 
-document.getElementById("soundBtn").addEventListener("click",()=>{
+document.getElementById("soundBtn").addEventListener("click",function(){
   if(!videoReady) return;
   if(isMuted){ player.unMute(); player.setVolume(100); isMuted=false; this.textContent="🔇 소리 OFF"; }
   else{ player.mute(); isMuted=true; this.textContent="🔊 소리 ON"; }
@@ -177,10 +178,14 @@ function updateCountdown(){
 
   if(now>=VIDEO_SEEK_TIME) seekVideoOnce();
 
+  if(diff<=0){
+    timeEl.textContent=""; // TARGET_TIME 지나면 바로 사라짐
+  } else {
+    let totalSec=Math.floor(diff/1000);
+    timeEl.textContent=`남은 시간 ${Math.floor(totalSec/60)}:${(totalSec%60).toString().padStart(2,"0")}`;
+  }
+
   let totalSec=Math.floor(diff/1000);
-
-  timeEl.textContent=`남은 시간 ${Math.floor(totalSec/60)}:${(totalSec%60).toString().padStart(2,"0")}`;
-
   if(totalSec>COUNTDOWN_START_SEC){
     finalEl.textContent="올 한 해 고생했어🫳🫳";
     finalEl.style.color="white";

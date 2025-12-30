@@ -19,6 +19,15 @@
       font-size: 2.4rem;
     }
 
+/* 모바일 최적화: 화면 폭 500px 이하 */
+@media (max-width: 500px) {
+  h1 {
+    font-size: 1.8rem; /* 모바일에서 작게 */
+    margin-top: 20px;  /* 위 여백도 조정 */
+  }
+}
+
+    
     #time-remaining {
       margin-top: 10px;
       font-size: 1.1rem;
@@ -169,8 +178,8 @@
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
-    const TARGET_TIME = new Date("2025-12-30T21:05:00+09:00");
-    const SEEK_OFFSET_SEC = 201;
+    const TARGET_TIME = new Date("2025-12-30T21:20:00+09:00");
+    const SEEK_OFFSET_SEC = 200;
     const VIDEO_SEEK_TIME = new Date(TARGET_TIME.getTime() - SEEK_OFFSET_SEC * 1000);
     const COUNTDOWN_START_SEC = 10;
 

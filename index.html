@@ -6,124 +6,155 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <style>
-  body {
-    margin: 0;
-    font-family: 'Apple SD Gothic Neo', 'Pretendard', sans-serif;
-    background: radial-gradient(circle at top, #1a1a2e, #000);
-    color: white;
-    text-align: center;
-    overflow-x: hidden;
-    position: relative;
+body {
+  margin: 0;
+  font-family: 'Apple SD Gothic Neo', 'Pretendard', sans-serif;
+  background: radial-gradient(circle at top, #1a1a2e, #000);
+  color: white;
+  text-align: center;
+  overflow-x: hidden;
+  position: relative;
+}
+
+h1 {
+  margin-top: 40px;
+  font-size: 2.4rem;
+}
+
+@media (max-width: 500px) {
+  h1 { font-size: 1.8rem; margin-top: 20px; }
+}
+
+#time-remaining {
+  margin-top: 10px;
+  font-size: 1.1rem;
+  opacity: 0.7;
+}
+
+#final-countdown {
+  margin-top: 20px;
+  min-height: 6rem;
+  font-size: 2.4rem;
+  font-weight: 600;
+  opacity: 0.85;
+  transition: all 0.4s ease;
+  white-space: nowrap; /* 모바일 줄바꿈 방지 */
+}
+
+.count-number {
+  font-size: 7rem;
+  font-weight: 800;
+  color: #ffd369;
+  text-shadow: 0 0 30px rgba(255,211,105,0.6);
+}
+
+.count-3 { color: #ffb703; }
+.count-2 { color: #ff6b35; }
+.count-1 { color: #fff; text-shadow: 0 0 40px white; }
+
+.count-animate {
+  animation: pop 0.8s ease-out;
+}
+
+@keyframes pop {
+  0%   { opacity: 0; transform: scale(0.5); }
+  60%  { opacity: 1; transform: scale(2); }
+  100% { transform: scale(1); }
+}
+
+/* GOLD GLITTER */
+.glitter {
+  color: #fff9c4; /* 옅은 황금색 */
+  text-shadow: 
+    0 0 5px #fff9c4,
+    0 0 10px #fff59d,
+    0 0 15px #fff176,
+    0 0 20px #ffe57f,
+    0 0 30px #fff9c4;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: glitter 1s infinite;
+}
+
+@keyframes glitter {
+  0%, 100% {
+    text-shadow: 
+      0 0 5px #fff9c4,
+      0 0 10px #fff59d,
+      0 0 15px #fff176,
+      0 0 20px #ffe57f,
+      0 0 30px #fff9c4;
   }
-
-  h1 {
-    margin-top: 40px;
-    font-size: 2.4rem;
+  50% {
+    text-shadow: 
+      0 0 10px #fff9c4,
+      0 0 20px #fff59d,
+      0 0 30px #fff176,
+      0 0 40px #ffe57f,
+      0 0 50px #fff9c4;
   }
+}
 
-  @media (max-width: 500px) {
-    h1 { font-size: 1.8rem; margin-top: 20px; }
-  }
+.video-wrapper { max-width: 900px; margin: 20px auto 0; padding: 0 12px; }
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-  #time-remaining {
-    margin-top: 10px;
-    font-size: 1.1rem;
-    opacity: 0.7;
-  }
+.sound-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 0 10px;
+  position: relative;
+  z-index: 20;
+}
 
-  #final-countdown {
-    margin-top: 20px;
-    min-height: 6rem;
-    font-size: 2.4rem;
-    font-weight: 600;
-    opacity: 0.85;
-    transition: all 0.4s ease;
-    white-space: nowrap; /* 모바일 줄바꿈 방지 */
-    color: #ffd700;       /* 황금빛 */
-    text-shadow: 0 0 40px #ffd700;
-  }
+.sound-notice {
+  font-size: 1rem;
+  opacity: 0.85;
+  animation: fadePulse 2s ease-in-out infinite;
+  word-break: keep-all;
+}
 
-  .count-number {
-    font-size: 7rem;
-    font-weight: 800;
-    color: #ffd369;
-    text-shadow: 0 0 30px rgba(255,211,105,0.6);
-  }
+@keyframes fadePulse {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
 
-  .count-3 { color: #ffb703; }
-  .count-2 { color: #ff6b35; }
-  .count-1 { color: #fff; text-shadow: 0 0 40px white; }
+.hidden { display: none; }
 
-  .count-animate {
-    animation: pop 0.8s ease-out;
-  }
+button {
+  padding: 14px 28px;
+  font-size: 16px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #ffd369, #ff9f45);
+  color: #000;
+  font-weight: 600;
+  min-width: 140px;
+  transition: transform 0.1s ease;
+}
+button:active { transform: scale(0.95); }
 
-  @keyframes pop {
-    0%   { opacity: 0; transform: scale(0.5); }
-    60%  { opacity: 1; transform: scale(2); }
-    100% { transform: scale(1); }
-  }
+@media (max-width: 500px) {
+  .sound-notice { font-size: 0.9rem; }
+  button { font-size: 15px; padding: 12px 24px; min-width: 120px; }
+  #final-countdown { font-size: 2rem; }
+}
 
-  .video-wrapper { max-width: 900px; margin: 20px auto 0; padding: 0 12px; }
-  .video-container {
-    position: relative;
-    width: 100%;
-    padding-top: 56.25%;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  }
-  iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
-
-  .sound-top {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 12px;
-    padding: 0 10px;
-    position: relative;
-    z-index: 20;
-  }
-
-  .sound-notice {
-    font-size: 1rem;
-    opacity: 0.85;
-    animation: fadePulse 2s ease-in-out infinite;
-    word-break: keep-all;
-  }
-
-  @keyframes fadePulse {
-    0% { opacity: 0.4; }
-    50% { opacity: 1; }
-    100% { opacity: 0.4; }
-  }
-
-  .hidden { display: none; }
-
-  button {
-    padding: 14px 28px;
-    font-size: 16px;
-    border-radius: 30px;
-    border: none;
-    cursor: pointer;
-    background: linear-gradient(135deg, #ffd369, #ff9f45);
-    color: #000;
-    font-weight: 600;
-    min-width: 140px;
-    transition: transform 0.1s ease;
-  }
-  button:active { transform: scale(0.95); }
-
-  @media (max-width: 500px) {
-    .sound-notice { font-size: 0.9rem; }
-    button { font-size: 15px; padding: 12px 24px; min-width: 120px; }
-    #final-countdown { font-size: 2rem; }
-  }
-
-  .flash { animation: flash 0.4s ease; }
-  @keyframes flash { 0% { background: white; } 100% { background: radial-gradient(circle at top, #1a1a2e, #000); } }
+.flash { animation: flash 0.4s ease; }
+@keyframes flash { 0% { background: white; } 100% { background: radial-gradient(circle at top, #1a1a2e, #000); } }
 </style>
 </head>
 
@@ -131,7 +162,7 @@
 <h1>💫2026년 이뤄낼 거니까💫</h1>
 
 <div id="time-remaining"></div>
-<div id="final-countdown">올 한 해 고생했어🫳🫳</div>
+<div id="final-countdown" style="color:white;">올 한 해 고생했어🫳🫳</div>
 
 <div class="video-wrapper">
   <div class="sound-top">
@@ -145,7 +176,7 @@
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const TARGET_TIME = new Date("2025-12-31T00:10:00+09:00");
+const TARGET_TIME = new Date("2025-12-31T00:20:00+09:00");
 const SEEK_OFFSET_SEC = 193;
 const VIDEO_SEEK_TIME = new Date(TARGET_TIME.getTime() - SEEK_OFFSET_SEC * 1000);
 const COUNTDOWN_START_SEC = 10;
@@ -192,20 +223,21 @@ function updateCountdown() {
     timeEl.textContent="";
     finalEl.textContent="HAPPY NEW YEAR";
     finalEl.style.fontSize="3rem";
+    finalEl.className="glitter";
     document.body.classList.add("flash");
     return;
   }
 
   if(totalSec > COUNTDOWN_START_SEC){
     finalEl.textContent="올 한 해 고생했어🫳🫳";
+    finalEl.style.color="white";
     finalEl.className="";
     timeEl.textContent=`남은 시간 ${Math.floor(totalSec/60)}:${(totalSec%60).toString().padStart(2,"0")}`;
     return;
   }
 
-  // 3-2-1 카운트다운
   finalEl.textContent = totalSec===0? "HAPPY NEW YEAR" : totalSec;
-  finalEl.className = totalSec===0? "" : "count-number count-animate";
+  finalEl.className = totalSec===0? "glitter" : "count-number count-animate";
 
   if(totalSec===3) finalEl.classList.add("count-3");
   if(totalSec===2) finalEl.classList.add("count-2");
@@ -219,7 +251,6 @@ function updateCountdown() {
   }
 
   timeEl.textContent=`남은 시간 ${Math.floor(totalSec/60)}:${(totalSec%60).toString().padStart(2,"0")}`;
-
 }
 
 setInterval(updateCountdown,1000);

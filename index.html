@@ -27,8 +27,7 @@
     margin-top: 10px;
     font-size: 1.1rem;
     opacity: 0.7;
-    min-height: 1.2em; /* 공간 유지 */
-    transition: opacity 0.3s ease;
+    min-height: 1.2em; /* 자리 유지 */
   }
 
   #final-countdown {
@@ -38,18 +37,18 @@
     font-weight: 600;
     opacity: 0.85;
     transition: all 0.4s ease;
-    text-shadow: 0 0 15px rgba(255,255,255,0.4);
+    text-shadow: 0 0 25px rgba(255,255,255,0.5);
   }
 
   .count-number {
     font-size: 7rem;
     font-weight: 800;
     color: #ffd369;
-    text-shadow: 0 0 40px rgba(255,211,105,0.7);
+    text-shadow: 0 0 60px rgba(255,211,105,0.9);
   }
   .count-3 { color: #ffb703; }
   .count-2 { color: #ff6b35; }
-  .count-1 { color: #fff; text-shadow: 0 0 50px white; }
+  .count-1 { color: #fff; text-shadow: 0 0 60px white; }
 
   .count-animate {
     animation: pop 0.8s ease-out;
@@ -74,23 +73,19 @@
     padding:0 10px;
     position:relative;
     z-index:20;
-    min-height:2em; /* 공간 유지 */
   }
   .sound-notice {
     font-size:1rem;
     opacity:0.85;
     animation: fadePulse 2s ease-in-out infinite;
     word-break: keep-all;
-    transition: opacity 0.3s ease;
+    min-height:1.2em; /* 자리 유지 */
   }
   @keyframes fadePulse {
     0%{opacity:0.4;}50%{opacity:1;}100%{opacity:0.4;}
   }
 
-  .hidden {
-    opacity: 0;
-    visibility: hidden;
-  }
+  .hidden { display:none; }
 
   button {
     padding: 14px 28px;
@@ -110,22 +105,21 @@
     .sound-notice { font-size:0.9rem; }
     button { font-size:15px; padding:12px 24px; min-width:120px; }
     #final-countdown { font-size:2rem; }
-    #final-text { font-size:2.2rem; } /* 모바일 폰트 조정 */
+    #final-text { font-size:12vw; } /* 화면폭에 맞춰 조정 */
   }
 
   #final-text {
-    font-size: 3rem;
+    font-size:4rem;
     font-weight: 800;
-    color: #fff9c0; /* 옅은 황금빛 */
-    text-shadow: 0 0 20px #fff9c0, 0 0 40px #fff9c0, 0 0 60px #fff9c0;
+    color: #fff9c0;
+    text-shadow: 0 0 30px #fff9c0, 0 0 60px #fff9c0, 0 0 90px #fff9c0;
     white-space: nowrap;
     display:inline-block;
     animation: glitter 1s ease-in-out infinite;
   }
-
   @keyframes glitter {
-    0%,100%{ text-shadow: 0 0 20px #fff9c0,0 0 40px #fff9c0,0 0 60px #fff9c0; }
-    50%{ text-shadow: 0 0 40px #fff9c0,0 0 60px #fff9c0,0 0 80px #fff9c0; }
+    0%,100%{ text-shadow: 0 0 30px #fff9c0,0 0 60px #fff9c0,0 0 90px #fff9c0; }
+    50%{ text-shadow: 0 0 50px #fff9c0,0 0 80px #fff9c0,0 0 120px #fff9c0; }
   }
 </style>
 </head>
@@ -145,7 +139,7 @@
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const TARGET_TIME = new Date("2025-12-31T01:25:00+09:00");
+const TARGET_TIME = new Date("2025-12-31T02:00:00+09:00");
 const SEEK_OFFSET_SEC = 193;
 const VIDEO_SEEK_TIME = new Date(TARGET_TIME.getTime() - SEEK_OFFSET_SEC*1000);
 const COUNTDOWN_START_SEC = 10;
@@ -156,8 +150,13 @@ const SEEK_POINT = 20;
 let player, videoReady=false, hasSeekedOnce=false, lastSecond=null, isMuted=true;
 
 function onYouTubeIframeAPIReady(){
-  player = new YT.Player("player",{ videoId: VIDEO_ID,
-    playerVars:{ autoplay:1, mute:1, loop:1, playlist:VIDEO_ID, controls:0, rel:0, modestbranding:1 },
+  player = new YT.Player("player",{ 
+    videoId: VIDEO_ID,
+    playerVars:{
+      autoplay:1, mute:1, loop:1, playlist:VIDEO_ID, controls:0, rel:0, modestbranding:1,
+      cc_load_policy: 1, // 자막 켜기
+      cc_lang_pref: 'ko'
+    },
     events:{ onReady:()=>{ videoReady=true; player.playVideo(); } }
   });
 }
@@ -166,13 +165,11 @@ function seekVideoOnce(){
   if(!videoReady || hasSeekedOnce) return;
   player.seekTo(SEEK_POINT,true);
   hasSeekedOnce=true;
-  const notice = document.getElementById("soundNotice");
-  notice.textContent="지금부터 소리 ON!";
-  notice.classList.remove("hidden");
+  document.getElementById("soundNotice").textContent="지금부터 소리 ON!";
   document.getElementById("soundBtn").classList.remove("hidden");
 }
 
-document.getElementById("soundBtn").addEventListener("click",function(){
+document.getElementById("soundBtn").addEventListener("click", function(){
   if(!videoReady) return;
   if(isMuted){ player.unMute(); player.setVolume(100); isMuted=false; this.textContent="🔇 소리 OFF"; }
   else{ player.mute(); isMuted=true; this.textContent="🔊 소리 ON"; }
@@ -187,24 +184,23 @@ function updateCountdown(){
 
   if(now>=VIDEO_SEEK_TIME) seekVideoOnce();
 
-  if(diff<=0){
-    timeEl.textContent="";
-    timeEl.classList.add("hidden"); // 공간 유지
-    finalEl.innerHTML='<span id="final-text">HAPPY NEW YEAR</span>';
-    return;
-  } else {
-    timeEl.classList.remove("hidden");
-  }
-
   let totalSec=Math.floor(diff/1000);
-  const min=Math.floor(totalSec/60);
-  const sec=totalSec%60;
-  timeEl.textContent=`남은 시간 ${min}:${sec.toString().padStart(2,"0")}`;
+
+  if(totalSec<0){
+    timeEl.textContent="";
+  } else {
+    timeEl.textContent=`남은 시간 ${Math.floor(totalSec/60)}:${(totalSec%60).toString().padStart(2,"0")}`;
+  }
 
   if(totalSec>COUNTDOWN_START_SEC){
     finalEl.textContent="올 한 해 고생했어🫳🫳";
     finalEl.style.color="white";
     finalEl.className="";
+    return;
+  }
+
+  if(totalSec<=0){
+    finalEl.innerHTML='<span id="final-text">HAPPY NEW YEAR</span>';
     return;
   }
 

@@ -132,7 +132,7 @@
 
   <script>
     /* ===== 설정 ===== */
-    const TARGET_TIME = new Date("2025-12-30T18:20:00+09:00"); // 한국 시간
+    const TARGET_TIME = new Date("2025-12-30T18:30:00+09:00"); // 한국 시간
     const VIDEO_ID = "DElqg7XL-s4";
     const START_TIME = 20; // 영상 시작 초
     const VIDEO_START_AT = 201; // 201초 남았을 때 영상 시작
@@ -155,23 +155,25 @@
     }
 
     function startVideo() {
-      if (videoStarted) return;
-      videoStarted = true;
+  if (videoStarted) return;
+  videoStarted = true;
 
-      player.mute();
-      player.playVideo();
-      document.getElementById("soundBtn").style.display = "inline-block";
-    }
-
-    if (player.isMuted()) {
-  player.unMute();
-  soundBtn.textContent = "🔇 소리 끄기";
-  soundBtn.style.background = "linear-gradient(135deg, #ff9f45, #ffd369)";
-} else {
   player.mute();
-  soundBtn.textContent = "🔊 소리 켜기";
-  soundBtn.style.background = "linear-gradient(135deg, #ffd369, #ff9f45)";
+  player.playVideo();
+  soundBtn.style.display = "inline-block";
 }
+
+/* ✅ 소리 토글은 "클릭할 때만" 실행 */
+soundBtn.onclick = () => {
+  if (player.isMuted()) {
+    player.unMute();
+    soundBtn.textContent = "🔇 소리 끄기";
+  } else {
+    player.mute();
+    soundBtn.textContent = "🔊 소리 켜기";
+  }
+};
+
 
 
     function updateCountdown() {

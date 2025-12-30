@@ -80,8 +80,15 @@
       height: 100%;
     }
 
+    .sound-top {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
     .sound-notice {
-      margin-top: 14px;
       font-size: 0.95rem;
       opacity: 0.85;
       animation: fadePulse 2s ease-in-out infinite;
@@ -98,7 +105,6 @@
     }
 
     button {
-      margin: 16px auto 40px;
       padding: 14px 28px;
       font-size: 16px;
       border-radius: 30px;
@@ -129,31 +135,25 @@
 
   <div class="video-wrapper">
     
-      <!-- 안내 문구 (처음부터 항상 표시) -->
-    <div id="soundNotice" class="sound-notice">
-      광고 스킵 후 기다려주세요
+    <div class="sound-top">
+      <div id="soundNotice" class="sound-notice">
+        광고 스킵 후 기다려주세요
+      </div>
+      <button id="soundBtn" class="hidden">🔊 소리 ON</button>
     </div>
 
-    <!-- 수동 소리 ON -->
-    <button id="soundBtn" class="hidden">🔊 소리 ON</button>
-  </div>
-  
     <div class="video-container">
       <div id="player"></div>
     </div>
-
-  
+    
+  </div>
 
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
-    /* ===== 시간 기준 ===== */
-    const TARGET_TIME = new Date("2025-12-30T20:15:00+09:00"); // 00:00:00
-    const SEEK_OFFSET_SEC = 201; // 타겟 시각보다 몇 초 전인지
-    const VIDEO_SEEK_TIME = new Date(
-  TARGET_TIME.getTime() - SEEK_OFFSET_SEC * 1000
-);
-
+    const TARGET_TIME = new Date("2025-12-30T20:15:00+09:00");
+    const SEEK_OFFSET_SEC = 201;
+    const VIDEO_SEEK_TIME = new Date(TARGET_TIME.getTime() - SEEK_OFFSET_SEC * 1000);
     const COUNTDOWN_START_SEC = 10;
 
     const VIDEO_ID = "DElqg7XL-s4";
@@ -187,30 +187,32 @@
     }
 
     function seekVideoOnce() {
-  if (!videoReady || hasSeekedOnce) return;
+      if (!videoReady || hasSeekedOnce) return;
 
-  player.seekTo(SEEK_POINT, true);
-  hasSeekedOnce = true;
+      player.seekTo(SEEK_POINT, true);
+      hasSeekedOnce = true;
 
-  document.getElementById("soundNotice").textContent =
-    "지금부터 시작!";
+      document.getElementById("soundNotice").textContent =
+        "지금부터 시작!";
+      document.getElementById("soundBtn").classList.remove("hidden");
+    }
 
-  document.getElementById("soundBtn").classList.remove("hidden");
-}
+    const soundBtn = document.getElementById("soundBtn");
+    soundBtn.addEventListener("click", () => {
+      if (!videoReady) return;
 
-document.getElementById("soundBtn").addEventListener("click", () => {
-  if (!videoReady) return;
+      if (isMuted) {
+        player.unMute();
+        player.setVolume(100);
+        isMuted = false;
+        soundBtn.textContent = "🔇 소리 OFF";
+      } else {
+        player.mute();
+        isMuted = true;
+        soundBtn.textContent = "🔊 소리 ON";
+      }
+    });
 
-  if (isMuted) {
-    player.unMute();
-    player.setVolume(100);
-    isMuted = false;
-
-    document.getElementById("soundNotice").classList.add("hidden");
-  }
-});
-
-    
     function updateCountdown() {
       const now = new Date();
       const diff = TARGET_TIME - now;
@@ -218,7 +220,6 @@ document.getElementById("soundBtn").addEventListener("click", () => {
       const timeEl = document.getElementById("time-remaining");
       const finalEl = document.getElementById("final-countdown");
 
-      // seekTo 시점 체크
       if (now >= VIDEO_SEEK_TIME) {
         seekVideoOnce();
       }
